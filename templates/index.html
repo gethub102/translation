@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Translation</title>
+  <link rel="stylesheet" href="../static/css/bootstrap.cosmo.min.css">
+  <script src="../static/js/jquery.min.js"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-inverse">
+  <div class="navbar-header">
+    <a class="navbar-brand" href="#">Translation</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="row">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" class="form-control" id="input-text" placeholder="Please input text...">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <button class="btn btn-primary" id="translate">Translate</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          Select source<input type="file" id="input-source">
+        </div>
+        <div class="form-group">
+          Select reference<input type="file" id="input-reference">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <button class="btn btn-primary" id="evaluate">Evaluate</button>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="result">Result:</label>
+          <textarea class="form-control" rows="4" id="result"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $("#translate").on('click', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+      url: '/translate',
+      type: 'POST',
+      data: $("#input-text").val(),
+      success: function (response) {
+        console.log(response);
+        $("#result").text(response);
+      }
+    });
+  });
+
+  $("#evaluate").on('click', function (e) {
+    e.preventDefault();
+
+    var data = new FormData();
+    data.append('source', $("#input-source")[0].files[0]);
+    data.append('reference', $("#input-reference")[0].files[0]);
+
+    $.ajax({
+      url: '/evaluate',
+      type: 'POST',
+      data: data,
+      contentType: false,
+      processData: false,
+      success: function (response) {
+        console.log(response);
+        $("#result").text(response);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
